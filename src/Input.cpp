@@ -23,6 +23,9 @@ void Input::initDefault() {
    for (auto key : keyBindings) {
       keysPressed.insert({key.first, false});
       keysHeld.insert({key.first, false});
+#ifdef ANDROID
+      virtualKeys.insert({key.first, false});
+#endif
    }
 }
 
@@ -30,25 +33,53 @@ void Input::set(Key action, SDL_Scancode keyCode) {
    keyBindings.insert_or_assign(action, keyCode);
    keysPressed.insert_or_assign(action, false);
    keysHeld.insert_or_assign(action, false);
+#ifdef ANDROID
+   virtualKeys.insert_or_assign(action, false);
+#endif
 }
 
 void Input::update(const Uint8* keystates) {
    currentRawKeys.clear();
 
    for (auto key : keyBindings) {
-      // If key pressed
-      if (keystates[key.second]) {
-         // Sets the key to be held if it is already pressed
+#ifdef ANDROID
+      // Combine keyboard state with virtual (touch) state
+      bool physicalDown = keystates[key.second];
+      bool virtualDown  = virtualKeys.count(key.first) ? virtualKeys.at(key.first) : false;
+      bool isDown = physicalDown || virtualDown;
+
+      // One-shot virtual press (menu tap)
+      if (virtualPressedThisFrame.count(key.first)) {
+         isDown = true;
+      }
+#else
+      bool isDown = keystates[key.second];
+#endif
+
+      if (isDown) {
          keysHeld.insert_or_assign(key.first, keysPressed.at(key.first));
-         // Sets the key to be pressed
          keysPressed.insert_or_assign(key.first, true);
       } else {
-         // Sets pressed and held to false if the key is not being currently pressed
          keysPressed.insert_or_assign(key.first, false);
          keysHeld.insert_or_assign(key.first, false);
       }
    }
+
+#ifdef ANDROID
+   // Clear one-shot presses after processing
+   virtualPressedThisFrame.clear();
+#endif
 }
+
+#ifdef ANDROID
+void Input::setVirtualKey(Key key, bool pressed) {
+   virtualKeys.insert_or_assign(key, pressed);
+}
+
+void Input::pressVirtualKey(Key key) {
+   virtualPressedThisFrame.insert(key);
+}
+#endif
 
 SDL_Scancode Input::getBoundKey(Key action) {
    return keyBindings.at(action);
