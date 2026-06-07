@@ -59,7 +59,7 @@ jobs:
           #   SDL_ttf/SDL_ttf.h
           # Fix: create a real jni/SDL2/ folder and symlink all headers into it.
           mkdir -p android/app/jni/SDL2
-          ln -s ../SDL/include/*.h      android/app/jni/SDL2/
+          ln -s ../SDL/include/*.h       android/app/jni/SDL2/
           ln -s ../SDL_image/SDL_image.h android/app/jni/SDL2/SDL_image.h
           ln -s ../SDL_mixer/SDL_mixer.h android/app/jni/SDL2/SDL_mixer.h
           ln -s ../SDL_ttf/SDL_ttf.h     android/app/jni/SDL2/SDL_ttf.h
@@ -70,17 +70,15 @@ jobs:
           cp -r include android/app/jni/include
           cp android/app/jni/src_android/Input.cpp       android/app/jni/src/Input.cpp
           cp android/app/jni/src_android/AndroidJNI.cpp  android/app/jni/src/AndroidJNI.cpp
+          cp android/app/jni/src_android/SoundManager.cpp  android/app/jni/src/SoundManager.cpp
+          cp android/app/jni/src_android/TextureManager.cpp android/app/jni/src/TextureManager.cpp
+          cp android/app/jni/src_android/main.cpp          android/app/jni/src/main.cpp
           cp android/app/jni/include_android/Input.h     android/app/jni/include/Input.h
 
       - name: Copy assets
         run: |
           mkdir -p android/app/src/main/assets
           cp -r bin/res android/app/src/main/assets/res
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.4'
 
       - name: Generate Gradle wrapper
         working-directory: android
