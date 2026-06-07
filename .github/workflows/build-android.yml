@@ -33,33 +33,32 @@ jobs:
         run: |
           mkdir -p android/app/jni
 
-          # SDL2 core — no submodules needed
           git clone --depth=1 --branch release-2.28.5 \
             https://github.com/libsdl-org/SDL.git \
             android/app/jni/SDL
 
-          # SDL2_image — needs jpeg/png submodules (external/jpeg, external/png)
           git clone --depth=1 --branch release-2.6.3 \
             --recurse-submodules --shallow-submodules \
             https://github.com/libsdl-org/SDL_image.git \
             android/app/jni/SDL_image
 
-          # SDL2_mixer — WAV only, no submodules needed
           git clone --depth=1 --branch release-2.6.3 \
             https://github.com/libsdl-org/SDL_mixer.git \
             android/app/jni/SDL_mixer
 
-          # SDL2_ttf — needs freetype + harfbuzz submodules
           git clone --depth=1 --branch release-2.20.2 \
             --recurse-submodules --shallow-submodules \
             https://github.com/libsdl-org/SDL_ttf.git \
             android/app/jni/SDL_ttf
 
-          # Game source uses #include <SDL2/SDL.h> (Linux/Windows convention).
-          # NDK puts SDL headers flat inside SDL/include/ with no SDL2/ subdir.
-          # Fix: create a symlink  jni/SDL2 -> SDL/include
-          # so that -I jni/  makes <SDL2/SDL.h> resolve correctly.
-          ln -s SDL/include android/app/jni/SDL2
+          # Game uses #include <SDL2/SDL.h>, <SDL2/SDL_mixer.h> etc. (Linux/Windows convention).
+          # NDK has no SDL2/ subdir — headers are flat inside each lib's folder.
+          # Solution: create jni/SDL2/ and copy all SDL headers into it.
+          mkdir -p android/app/jni/SDL2
+          cp android/app/jni/SDL/include/*.h         android/app/jni/SDL2/
+          cp android/app/jni/SDL_image/SDL_image.h   android/app/jni/SDL2/
+          cp android/app/jni/SDL_mixer/SDL_mixer.h   android/app/jni/SDL2/
+          cp android/app/jni/SDL_ttf/SDL_ttf.h       android/app/jni/SDL2/
 
       - name: Copy game source into JNI
         run: |
