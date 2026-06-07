@@ -40,13 +40,9 @@ int TextureManager::Init() {
     }
 
 #ifdef ANDROID
-    // SDLActivity уже создала окно — берём его, не создаём новое.
-    // SDL_GL_GetCurrentWindow() возвращает окно, которое SDL2 создал внутри SDLActivity.
-    window = SDL_GL_GetCurrentWindow();
-    if (!window) {
-        // Fallback: попробуем взять первое окно из списка
-        window = SDL_GetWindowFromID(1);
-    }
+    // SDLActivity уже создала окно — берём его по ID=1.
+    // SDL2 Android всегда создаёт ровно одно окно с ID=1 внутри SDLActivity.
+    window = SDL_GetWindowFromID(1);
     if (!window) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
                      "Android: failed to get SDL window from SDLActivity: %s", SDL_GetError());
