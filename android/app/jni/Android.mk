@@ -7,7 +7,7 @@ LOCAL_PATH := $(MY_ROOT)
 include $(LOCAL_PATH)/SDL/Android.mk
 
 ###########################
-# SDL2_image (PNG+JPG через системные zlib/libjpeg)
+# SDL2_image
 ###########################
 LOCAL_PATH := $(MY_ROOT)
 SUPPORT_PNG        := true
