@@ -43,6 +43,9 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := main
 
+# $(LOCAL_PATH) добавлен первым — это папка jni/.
+# В CI создаётся симлинк jni/SDL2 -> SDL/include,
+# поэтому #include <SDL2/SDL.h> резолвится как jni/SDL2/SDL.h ✓
 LOCAL_C_INCLUDES := \
     $(LOCAL_PATH) \
     $(LOCAL_PATH)/SDL/include \
