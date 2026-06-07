@@ -33,47 +33,44 @@ jobs:
         run: |
           mkdir -p android/app/jni
 
-          # SDL2 core
           git clone --depth=1 --branch release-2.28.5 \
             https://github.com/libsdl-org/SDL.git \
             android/app/jni/SDL
 
-          # SDL2_image — needs jpeg/png submodules
           git clone --depth=1 --branch release-2.6.3 \
             --recurse-submodules --shallow-submodules \
             https://github.com/libsdl-org/SDL_image.git \
             android/app/jni/SDL_image
 
-          # SDL2_mixer
           git clone --depth=1 --branch release-2.6.3 \
             https://github.com/libsdl-org/SDL_mixer.git \
             android/app/jni/SDL_mixer
 
-          # SDL2_ttf — needs freetype + harfbuzz submodules
           git clone --depth=1 --branch release-2.20.2 \
             --recurse-submodules --shallow-submodules \
             https://github.com/libsdl-org/SDL_ttf.git \
             android/app/jni/SDL_ttf
 
-          # Game uses #include <SDL2/SDL.h> (Linux/Windows convention).
-          # NDK puts SDL headers flat in SDL/include/ with no SDL2/ subdir.
-          # Symlink: jni/SDL2 -> SDL/include  +  -I jni/  in Android.mk fixes this.
-          ln -s SDL/include android/app/jni/SDL2
+          # Game uses #include <SDL2/SDL.h>, <SDL2/SDL_mixer.h>, etc.
+          # Each SDL lib puts its headers in a different location:
+          #   SDL/include/SDL.h, SDL/include/SDL_*.h
+          #   SDL_image/SDL_image.h
+          #   SDL_mixer/SDL_mixer.h
+          #   SDL_ttf/SDL_ttf.h
+          # Fix: create a real jni/SDL2/ folder and symlink all headers into it.
+          mkdir -p android/app/jni/SDL2
+          ln -s ../SDL/include/*.h      android/app/jni/SDL2/
+          ln -s ../SDL_image/SDL_image.h android/app/jni/SDL2/SDL_image.h
+          ln -s ../SDL_mixer/SDL_mixer.h android/app/jni/SDL2/SDL_mixer.h
+          ln -s ../SDL_ttf/SDL_ttf.h     android/app/jni/SDL2/SDL_ttf.h
 
       - name: Copy game source into JNI
         run: |
-          cp -r src     android/app/jni/src
+          cp -r src android/app/jni/src
           cp -r include android/app/jni/include
-
-          # Overwrite with Android-patched versions of main.cpp and TextureManager.cpp
-          cp android/app/jni/src_android/main.cpp          android/app/jni/src/main.cpp
-          cp android/app/jni/src_android/TextureManager.cpp android/app/jni/src/TextureManager.cpp
-          cp android/app/jni/src_android/SoundManager.cpp  android/app/jni/src/SoundManager.cpp
-
-          # Android-specific Input/JNI sources
-          cp android/app/jni/src_android/Input.cpp         android/app/jni/src/Input.cpp
-          cp android/app/jni/src_android/AndroidJNI.cpp    android/app/jni/src/AndroidJNI.cpp
-          cp android/app/jni/include_android/Input.h       android/app/jni/include/Input.h
+          cp android/app/jni/src_android/Input.cpp       android/app/jni/src/Input.cpp
+          cp android/app/jni/src_android/AndroidJNI.cpp  android/app/jni/src/AndroidJNI.cpp
+          cp android/app/jni/include_android/Input.h     android/app/jni/include/Input.h
 
       - name: Copy assets
         run: |
