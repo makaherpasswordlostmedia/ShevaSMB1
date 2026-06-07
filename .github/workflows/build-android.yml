@@ -55,6 +55,12 @@ jobs:
             https://github.com/libsdl-org/SDL_ttf.git \
             android/app/jni/SDL_ttf
 
+          # Game source uses #include <SDL2/SDL.h> (Linux/Windows convention).
+          # NDK puts SDL headers flat inside SDL/include/ with no SDL2/ subdir.
+          # Fix: create a symlink  jni/SDL2 -> SDL/include
+          # so that -I jni/  makes <SDL2/SDL.h> resolve correctly.
+          ln -s SDL/include android/app/jni/SDL2
+
       - name: Copy game source into JNI
         run: |
           cp -r src android/app/jni/src
