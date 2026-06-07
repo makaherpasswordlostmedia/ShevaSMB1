@@ -51,13 +51,6 @@ jobs:
             https://github.com/libsdl-org/SDL_ttf.git \
             android/app/jni/SDL_ttf
 
-          # Game uses #include <SDL2/SDL.h>, <SDL2/SDL_mixer.h>, etc.
-          # Each SDL lib puts its headers in a different location:
-          #   SDL/include/SDL.h, SDL/include/SDL_*.h
-          #   SDL_image/SDL_image.h
-          #   SDL_mixer/SDL_mixer.h
-          #   SDL_ttf/SDL_ttf.h
-          # Fix: create a real jni/SDL2/ folder and symlink all headers into it.
           mkdir -p android/app/jni/SDL2
           ln -s ../SDL/include/*.h       android/app/jni/SDL2/
           ln -s ../SDL_image/SDL_image.h android/app/jni/SDL2/SDL_image.h
@@ -68,12 +61,12 @@ jobs:
         run: |
           cp -r src android/app/jni/src
           cp -r include android/app/jni/include
-          cp android/app/jni/src_android/Input.cpp       android/app/jni/src/Input.cpp
-          cp android/app/jni/src_android/AndroidJNI.cpp  android/app/jni/src/AndroidJNI.cpp
+          cp android/app/jni/src_android/Input.cpp         android/app/jni/src/Input.cpp
+          cp android/app/jni/src_android/AndroidJNI.cpp    android/app/jni/src/AndroidJNI.cpp
           cp android/app/jni/src_android/SoundManager.cpp  android/app/jni/src/SoundManager.cpp
           cp android/app/jni/src_android/TextureManager.cpp android/app/jni/src/TextureManager.cpp
-          cp android/app/jni/src_android/main.cpp          android/app/jni/src/main.cpp
-          cp android/app/jni/include_android/Input.h     android/app/jni/include/Input.h
+          cp android/app/jni/src_android/main.cpp           android/app/jni/src/main.cpp
+          cp android/app/jni/include_android/Input.h       android/app/jni/include/Input.h
 
       - name: Copy assets
         run: |
@@ -83,7 +76,15 @@ jobs:
       - name: Generate Gradle wrapper
         working-directory: android
         run: |
-          gradle wrapper --gradle-version 8.4
+          mkdir -p gradle/wrapper
+          cat > gradle/wrapper/gradle-wrapper.properties << 'EOF'
+          distributionBase=GRADLE_USER_HOME
+          distributionPath=wrapper/dists
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-bin.zip
+          zipStoreBase=GRADLE_USER_HOME
+          zipStorePath=wrapper/dists
+          EOF
+          curl -fsSL https://raw.githubusercontent.com/gradle/gradle/v8.4.0/gradlew -o gradlew
           chmod +x gradlew
 
       - name: Build debug APK
