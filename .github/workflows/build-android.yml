@@ -32,16 +32,26 @@ jobs:
       - name: Clone SDL2 libraries (with external/ subfolders)
         run: |
           mkdir -p android/app/jni
+
+          # SDL2 core — no submodules needed
           git clone --depth=1 --branch release-2.28.5 \
             https://github.com/libsdl-org/SDL.git \
             android/app/jni/SDL
+
+          # SDL2_image — needs jpeg/png submodules (external/jpeg, external/png)
           git clone --depth=1 --branch release-2.6.3 \
+            --recurse-submodules --shallow-submodules \
             https://github.com/libsdl-org/SDL_image.git \
             android/app/jni/SDL_image
+
+          # SDL2_mixer — WAV only, no submodules needed
           git clone --depth=1 --branch release-2.6.3 \
             https://github.com/libsdl-org/SDL_mixer.git \
             android/app/jni/SDL_mixer
+
+          # SDL2_ttf — needs freetype + harfbuzz submodules
           git clone --depth=1 --branch release-2.20.2 \
+            --recurse-submodules --shallow-submodules \
             https://github.com/libsdl-org/SDL_ttf.git \
             android/app/jni/SDL_ttf
 
