@@ -54,11 +54,13 @@ jobs:
           # Game uses #include <SDL2/SDL.h>, <SDL2/SDL_mixer.h> etc. (Linux/Windows convention).
           # NDK has no SDL2/ subdir — headers are flat inside each lib's folder.
           # Solution: create jni/SDL2/ and copy all SDL headers into it.
+          # Game uses #include <SDL2/SDL.h>, <SDL2/SDL_mixer.h> etc.
+          # NDK has no SDL2/ subdir — collect all SDL headers into one jni/SDL2/ folder.
           mkdir -p android/app/jni/SDL2
-          cp android/app/jni/SDL/include/*.h         android/app/jni/SDL2/
-          cp android/app/jni/SDL_image/SDL_image.h   android/app/jni/SDL2/
-          cp android/app/jni/SDL_mixer/SDL_mixer.h   android/app/jni/SDL2/
-          cp android/app/jni/SDL_ttf/SDL_ttf.h       android/app/jni/SDL2/
+          cp android/app/jni/SDL/include/*.h android/app/jni/SDL2/
+          find android/app/jni/SDL_image -name "SDL_image.h"  -exec cp {} android/app/jni/SDL2/ \;
+          find android/app/jni/SDL_mixer -name "SDL_mixer.h"  -exec cp {} android/app/jni/SDL2/ \;
+          find android/app/jni/SDL_ttf   -name "SDL_ttf.h"    -exec cp {} android/app/jni/SDL2/ \;
 
       - name: Copy game source into JNI
         run: |
