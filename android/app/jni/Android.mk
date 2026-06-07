@@ -44,6 +44,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := main
 
 LOCAL_C_INCLUDES := \
+    $(LOCAL_PATH) \
     $(LOCAL_PATH)/SDL/include \
     $(LOCAL_PATH)/SDL_image \
     $(LOCAL_PATH)/SDL_mixer \
