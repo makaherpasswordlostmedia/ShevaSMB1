@@ -7,20 +7,26 @@ LOCAL_PATH := $(MY_ROOT)
 include $(LOCAL_PATH)/SDL/Android.mk
 
 ###########################
-# SDL2_image
+# SDL2_image (PNG+JPG через системные zlib/libjpeg)
 ###########################
 LOCAL_PATH := $(MY_ROOT)
-SUPPORT_PNG := true
-SUPPORT_JPG := true
+SUPPORT_PNG        := true
+SUPPORT_JPG        := true
+SUPPORT_WEBP       := false
+SUPPORT_PNG_SHARED := false
+SUPPORT_JPG_SHARED := false
 include $(LOCAL_PATH)/SDL_image/Android.mk
 
 ###########################
 # SDL2_mixer
 ###########################
 LOCAL_PATH := $(MY_ROOT)
-SUPPORT_WAV := true
-SUPPORT_OGG := false
-SUPPORT_MP3_MPG123 := false
+SUPPORT_WAV          := true
+SUPPORT_OGG          := false
+SUPPORT_MP3_MPG123   := false
+SUPPORT_FLAC         := false
+SUPPORT_MOD_MODPLUG  := false
+SUPPORT_MID_TIMIDITY := false
 include $(LOCAL_PATH)/SDL_mixer/Android.mk
 
 ###########################
@@ -83,6 +89,6 @@ LOCAL_CPPFLAGS := -std=c++17 -DANDROID -DSDL_MAIN_HANDLED
 
 LOCAL_SHARED_LIBRARIES := SDL2 SDL2_image SDL2_mixer SDL2_ttf
 
-LOCAL_LDLIBS := -lGLESv1_CM -lGLESv2 -lOpenSLES -llog -landroid
+LOCAL_LDLIBS := -lGLESv1_CM -lGLESv2 -lOpenSLES -llog -landroid -lz
 
 include $(BUILD_SHARED_LIBRARY)
