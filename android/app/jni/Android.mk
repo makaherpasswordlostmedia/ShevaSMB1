@@ -1,13 +1,15 @@
-LOCAL_PATH := $(call my-dir)
+MY_ROOT := $(call my-dir)
 
 ###########################
 # SDL2
 ###########################
+LOCAL_PATH := $(MY_ROOT)
 include $(LOCAL_PATH)/SDL/Android.mk
 
 ###########################
 # SDL2_image
 ###########################
+LOCAL_PATH := $(MY_ROOT)
 SUPPORT_PNG := true
 SUPPORT_JPG := true
 include $(LOCAL_PATH)/SDL_image/Android.mk
@@ -15,6 +17,7 @@ include $(LOCAL_PATH)/SDL_image/Android.mk
 ###########################
 # SDL2_mixer
 ###########################
+LOCAL_PATH := $(MY_ROOT)
 SUPPORT_WAV := true
 SUPPORT_OGG := false
 SUPPORT_MP3_MPG123 := false
@@ -23,11 +26,13 @@ include $(LOCAL_PATH)/SDL_mixer/Android.mk
 ###########################
 # SDL2_ttf
 ###########################
+LOCAL_PATH := $(MY_ROOT)
 include $(LOCAL_PATH)/SDL_ttf/Android.mk
 
 ###########################
 # Super Mario Bros (game)
 ###########################
+LOCAL_PATH := $(MY_ROOT)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := main
