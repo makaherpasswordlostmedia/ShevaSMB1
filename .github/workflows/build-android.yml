@@ -52,10 +52,10 @@ jobs:
             android/app/jni/SDL_ttf
 
           mkdir -p android/app/jni/SDL2
-          ln -s ../SDL/include/*.h       android/app/jni/SDL2/
-          ln -s ../SDL_image/SDL_image.h android/app/jni/SDL2/SDL_image.h
-          ln -s ../SDL_mixer/SDL_mixer.h android/app/jni/SDL2/SDL_mixer.h
-          ln -s ../SDL_ttf/SDL_ttf.h     android/app/jni/SDL2/SDL_ttf.h
+          cp android/app/jni/SDL/include/*.h       android/app/jni/SDL2/
+          cp android/app/jni/SDL_image/SDL_image.h android/app/jni/SDL2/SDL_image.h
+          cp android/app/jni/SDL_mixer/SDL_mixer.h android/app/jni/SDL2/SDL_mixer.h
+          cp android/app/jni/SDL_ttf/SDL_ttf.h     android/app/jni/SDL2/SDL_ttf.h
 
       - name: Copy game source into JNI
         run: |
