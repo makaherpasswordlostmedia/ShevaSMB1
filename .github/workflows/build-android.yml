@@ -43,6 +43,7 @@ jobs:
             android/app/jni/SDL_image
 
           git clone --depth=1 --branch release-2.6.3 \
+            --recurse-submodules --shallow-submodules \
             https://github.com/libsdl-org/SDL_mixer.git \
             android/app/jni/SDL_mixer
 
@@ -52,10 +53,10 @@ jobs:
             android/app/jni/SDL_ttf
 
           mkdir -p android/app/jni/SDL2
-          cp android/app/jni/SDL/include/*.h       android/app/jni/SDL2/
-          cp android/app/jni/SDL_image/SDL_image.h android/app/jni/SDL2/SDL_image.h
-          cp android/app/jni/SDL_mixer/SDL_mixer.h android/app/jni/SDL2/SDL_mixer.h
-          cp android/app/jni/SDL_ttf/SDL_ttf.h     android/app/jni/SDL2/SDL_ttf.h
+          cp android/app/jni/SDL/include/*.h              android/app/jni/SDL2/
+          cp android/app/jni/SDL_image/SDL_image.h        android/app/jni/SDL2/SDL_image.h
+          cp android/app/jni/SDL_mixer/include/SDL_mixer.h android/app/jni/SDL2/SDL_mixer.h
+          cp android/app/jni/SDL_ttf/SDL_ttf.h            android/app/jni/SDL2/SDL_ttf.h
 
       - name: Copy game source into JNI
         run: |
